@@ -1,0 +1,21 @@
+spring:
+  main.banner-mode: 'OFF'
+  application:
+    name: openapiParser
+  profiles:
+    active: local
+  cloud:
+    config:
+      uri: http://localhost:8888
+      username: username
+      password: password
+      fail-fast: true
+      label: ${buildVersion}
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal/actuator
+      exposure:
+        include: info,health,metrics,loggers,prometheus

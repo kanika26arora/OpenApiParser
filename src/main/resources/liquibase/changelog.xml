@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="init" author="system">
+        <sqlFile path="liquibase/sql/init.sql"/>
+        <comment>Set up initial db schema</comment>
+    </changeSet>
+    <changeSet  id="1"  author="amrit.danewalia">
+        <addColumn  tableName="provider_endpoint">
+            <column  name="operation_id"  type="varchar(100)" remarks="Operation id of endpoint to uniquely identify">
+                <constraints  nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet  id="2"  author="amrit.danewalia" >
+        <createTable tableName="shedlock">
+            <column name="name" type="VARCHAR(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="lock_until" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="locked_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <comment>Create shedlock table to handle synchronization for cron jobs</comment>
+    </changeSet>
+    <changeSet  id="3"  author="amrit.danewalia" >
+        <modifyDataType columnName="lock_until"
+                         newDataType="datetime(3)"
+                         tableName="shedlock"/>
+    </changeSet>
+    <changeSet  id="4"  author="amrit.danewalia" >
+        <modifyDataType columnName="locked_at"
+                        newDataType="datetime(3)"
+                        tableName="shedlock"/>
+    </changeSet>
+    <changeSet  id="5"  author="amrit.danewalia" >
+        <modifyDataType columnName="operation_id"
+                        newDataType="INT UNSIGNED"
+                        tableName="provider_endpoint"/>
+    </changeSet>
+    <changeSet  id="6"  author="amrit.danewalia" >
+        <addUniqueConstraint  columnNames="provider_specification_version_id, operation_id"
+                              constraintName="multi_1"
+                              tableName="provider_endpoint"/>
+    </changeSet>
+    <changeSet  id="7"  author="amrit.danewalia" >
+        <modifyDataType columnName="operation_id"
+                        newDataType="SMALLINT UNSIGNED"
+                        tableName="provider_endpoint"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,1637 @@
+openapi: 3.0.0
+info:
+  title: Zendesk Support APIs
+  version: 1.0.0
+servers:
+  - url: https://d3v-clickatell2162.zendesk.com
+    description: Clickatell Zendesk Support Dev
+paths:
+  /api/v2/users/{user_id}:
+    get:
+      summary: Get customer
+      description: Get customer
+      operationId: 1
+      parameters:
+        - name: user_id
+          example: 1268837056729
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+      security:
+        - bearerAuth: []
+    put:
+      summary: Update customer
+      description: Update customer
+      operationId: 2
+      parameters:
+        - name: user_id
+          required: true
+          example: 1268837056729
+          in: path
+          schema:
+            type: integer
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /api/v2/users:
+    post:
+      summary: Create User
+      description: Create User
+      operationId: 3
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /api/v2/users/search.json:
+    get:
+      summary: Search customer
+      description: Search customer
+      operationId: 4
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            example: saurabh.hooda@clickatell.com
+        - name: external_id
+          in: query
+          schema:
+            type: string
+            example: Test123
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchCustomer'
+  /api/v2/user_fields/{user_field_id}:
+    get:
+      summary: Get user's custom fields
+      description: Get user's custom fields
+      operationId: 5
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserFields'
+    parameters:
+    - name: user_field_id
+      in: path
+      required: true
+      example: 8959346038811
+      schema:
+        type: string
+  /api/v2/user_fields/{user_field_id}/options:
+    get:
+      summary: Get user's custom fields options
+      description: Get user's custom fields options
+      operationId: 6
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserFieldOptions'
+    parameters:
+      - name: user_field_id
+        in: path
+        required: true
+        example: 8959346038811
+        schema:
+          type: string
+  /api/v2/tags:
+    get:
+      summary: Get TAGS
+      description: Get TAGS
+      operationId: 7
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tags'
+  /api/v2/users/{user_id}/tickets/requested:
+    get:
+      summary: Get Zendesk Ticket by requester
+      description: Get Zendesk Ticket by requester
+      operationId: 8
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tickets'
+    parameters:
+      - name: user_id
+        example: 1268837056729
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: sort
+        in: query
+        description: The field on which the result has to be ordered
+        schema:
+          default: created_at
+          type: string
+      - name: sort_order
+        in: query
+        description: DESC or ASC
+        schema:
+          default: DESC
+          type: string
+  /api/v2/users/{user_id}/tickets/ccd:
+    get:
+      summary: Get Zendesk Ticket by CCD
+      description: Get Zendesk Ticket by CCD
+      operationId: 9
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tickets'
+      parameters:
+        - name: user_id
+          in: path
+          example: 1268837056729
+          required: true
+          schema:
+            type: integer
+  /api/v2/tickets:
+    post:
+      summary: Create Zendesk Ticket
+      description: Create Zendesk Ticket
+      operationId: 10
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket:
+                  allOf:
+                    - $ref: '#/components/schemas/Ticket'
+                    - properties:
+                        via_followup_source_id:
+                          type: integer
+                          readOnly: false
+                          description: >-
+                            POST requests only. The id of a closed ticket when
+                            creating a follow-up ticket.
+
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ticket:
+                    allOf:
+                      - $ref: '#/components/schemas/Ticket'
+                      - properties:
+                          macro_ids:
+                            type: array
+                            readOnly: false
+                            description: >-
+                              POST requests only. List of macro IDs to be
+                              recorded in the ticket audit
+                            items:
+                              type: integer
+                          via_followup_source_id:
+                            type: integer
+                            readOnly: false
+                            description: >-
+                              POST requests only. The id of a closed ticket when
+                              creating a follow-up ticket.
+  /api/v2/tickets/{ticket_id}:
+    put:
+      summary: Update Zendesk Ticket
+      description: Update Zendesk Ticket
+      operationId: 11
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticket:
+                  allOf:
+                      - $ref: '#/components/schemas/Ticket'
+                      - properties:
+                          safe_update:
+                              type: boolean
+                              readOnly: false
+                              writeOnly: true
+                              default: false
+                              description: >-
+                                  Write only. Optional boolean. Prevents updates with outdated ticket
+                                  data (updated_stamp property required when true)
+                          updated_stamp:
+                            type: string
+                            format: date-time
+                            readOnly: false
+                            writeOnly: true
+                            description: Write only. Datetime of last update received from API.
+
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ticket:
+                    allOf:
+                      - $ref: '#/components/schemas/Ticket'
+                      - properties:
+                          macro_ids:
+                            type: array
+                            readOnly: false
+                            items:
+                              type: integer
+                          via_followup_source_id:
+                            type: integer
+                            readOnly: false
+    parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          example: 76
+  /api/v2/help_center/articles/search.json:
+    get:
+      summary: Search Zendesk Help Center Articles
+      description: Search Zendesk Help Center Articles
+      operationId: 12
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sort_order
+          in: query
+          schema:
+            default: desc
+            type: string
+            enum:
+              - desc
+              - asc
+            example: desc
+        - name: query
+          in: query
+          required: true
+          schema:
+           type: string
+          example: Printing
+        - name: category
+          in: query
+          schema:
+           type: string
+          example: Printing
+        - name: section
+          in: query
+          schema:
+           type: string
+          example: Printing
+        - name: label_names
+          schema:
+           type: string
+          in: query
+          example: Print, paper
+          description: A comma-separated list of label names.
+        - name: brand_id
+          description: Search for articles in the specified brand
+          in: query
+          schema:
+           type: integer
+        - name: created_after
+          in: query
+          description: Limit the search to articles created after a given date (format YYYY-MM-DD).
+          schema:
+           type: string
+        - name: created_at
+          in: query
+          description: Limit the search to articles created on a given date (format YYYY-MM-DD).
+          schema:
+           type: string
+        - name: created_before
+          in: query
+          description: Limit the search to articles created before a given date (format YYYY-MM-DD).
+          schema:
+           type: string
+           example: yyyy-mm-dd
+        - name: locale
+          in: query
+          description: Search for articles in the specified locale.
+          schema:
+           type: string
+        - name: multibrand
+          in: query
+          description: Enable search across all brands if true. Defaults to false if omitted.
+          schema:
+           type: boolean
+           default: false
+        - name: sort_by
+          in: query
+          schema:
+           type: string
+           example: updated_at
+        - name: updated_after
+          in: query
+          description: Limit the search to articles updated after a given date (format YYYY-MM-DD).
+          schema:
+           type: string
+           example: yyyy-mm-dd
+        - name: updated_at
+          in: query
+          description: Limit the search to articles updated on a given date (format YYYY-MM-DD).
+          schema:
+           type: string
+           example: yyyy-mm-dd
+        - name: updated_before
+          in: query
+          description: Limit the search to articles updated before a given date (format YYYY-MM-DD).
+          schema:
+           type: string
+           example: yyyy-mm-dd
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Help_Articles'
+  /api/v2/uploads:
+    post:
+      summary: Upload Attachment
+      description: Upload Attachment
+      operationId: 13
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: filename
+          in: query
+          required: true
+          schema:
+            type: string
+            example: user_crash.log
+        - name: token
+          in: query
+          schema:
+            type: string
+            example: 'LXJdriewLBP8JrtzzkN7Ne4k6'
+      requestBody:
+        content:
+          'multipart/form-data':
+            schema:
+              type: string
+              format: binary
+          'image/jpeg':
+            schema:
+              type: string
+              format: binary
+          'image/png':
+            schema:
+              type: string
+              format: binary 
+      responses:
+        '200':
+          description: success response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachments'
+tags: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Customer:
+      type: object
+      properties:
+        user:
+          type: object
+          required:
+            - name
+          properties:
+            active:
+              type: boolean
+              readOnly: true
+              description: false if the user has been deleted
+            alias:
+              type: string
+              nullable: true
+              readOnly: false
+              description: An alias displayed to end users
+            chat_only:
+              type: boolean
+              readOnly: true
+              description: Whether or not the user is a chat-only agent
+            created_at:
+              type: string
+              format: date-time
+              readOnly: true
+              example: 2009-07-20T22:55:29.000Z
+            custom_role_id:
+              type: integer
+              nullable: true
+              readOnly: false
+              description: >-
+                A custom role if the user is an agent on the Enterprise plan or
+                above
+            default_group_id:
+              type: integer
+              nullable: true
+              readOnly: false
+              description: The id of the user's default group
+            details:
+              type: string
+              nullable: true
+              readOnly: false
+              description: Any details you want to store about the user, such as an address
+            email:
+              type: string
+              readOnly: false
+              example: johnny@example.com
+            external_id:
+              type: string
+              nullable: true
+              readOnly: false
+              description: >-
+                A unique identifier from another system. The API treats the id
+                as case sensitive.
+            iana_time_zone:
+              type: string
+              readOnly: true
+              description: The time zone for the user
+            id:
+              type: integer
+              readOnly: true
+              example: 35436
+            last_login_at:
+              type: string
+              readOnly: true
+              description: >-
+                Last time the user signed in to Zendesk Support or made an API
+                request using an API token or basic authentication
+            locale:
+              type: string
+              readOnly: false
+              example: en-US
+            locale_id:
+              type: integer
+              readOnly: false
+              example: 1
+              description: The user's language identifier
+            moderator:
+              type: boolean
+              readOnly: false
+              description: Designates whether the user has forum moderation capabilities
+            name:
+              type: string
+              readOnly: false
+              example: Johnny End User
+            notes:
+              type: string
+              nullable: true
+              readOnly: false
+            only_private_comments:
+              type: boolean
+              readOnly: false
+              description: true if the user can only create private comments
+            organization_id:
+              type: integer
+              nullable: true
+              readOnly: false
+              example: 57542
+            phone:
+              type: string
+              readOnly: false
+              example: 15551234567
+            photo:
+              $ref: '#/components/schemas/Attachment'
+            remote_photo_url:
+              type: string
+              readOnly: false
+              description: A URL pointing to the user's profile picture.
+            report_csv:
+              type: boolean
+              readOnly: true
+              description: >-
+                Whether or not the user can access the CSV report on the Search
+                tab of the Reporting page in the Support admin interface.
+            restricted_agent:
+              type: boolean
+              readOnly: false
+              description: >-
+                If the agent has any restrictions; false for admins and
+                unrestricted agents, true for other agents
+            role:
+              type: string
+              readOnly: false
+              enum:
+                - end-user
+                - agent
+                - admin
+              description: >-
+                The role of the user. Possible values- "end-user", "agent",
+                "admin".
+              example: end-user
+            role_type:
+              type: integer
+              nullable: true
+              readOnly: true
+              description: >-
+                The user's role id. 0 for a custom agent, 1 for a light agent, 2
+                for a chat agent, 3 for a chat agent added to the Support
+                account as a contributor (Chat Phase 4), 4 for an admin, and 5
+                for a billing admin
+            shared:
+              type: boolean
+              readOnly: true
+              description: >-
+                If the user is shared from a different Zendesk Support instance.
+                Ticket sharing accounts only
+            shared_agent:
+              type: boolean
+              readOnly: true
+              description: >-
+                If the user is a shared agent from a different Zendesk Support
+                instance. Ticket sharing accounts only
+            shared_phone_number:
+              type: boolean
+              readOnly: true
+            signature:
+              type: string
+              nullable: true
+              readOnly: false
+              description: The user's signature. Only agents and admins can have signatures
+            suspended:
+              type: boolean
+              readOnly: false
+              description: If the agent is suspended.
+            tags:
+              type: array
+              readOnly: true
+              items:
+                type: string
+            ticket_restriction:
+              type: string
+              readOnly: false
+              nullable: true
+              enum:
+                - organization
+                - groups
+                - assigned
+                - requested
+                - null
+              description: >-
+                Specifies which tickets the user has access to. Possible values
+                are- "organization", "groups", "assigned", "requested", null
+            time_zone:
+              type: string
+              readOnly: false
+              example: Copenhagen
+            two_factor_auth_enabled:
+              type: boolean
+              readOnly: true
+            user_fields:
+              type: object
+              readOnly: false
+            url:
+              type: string
+              readOnly: true
+              example: https://company.zendesk.com/api/v2/end_users/35436.json
+            verified:
+              type: boolean
+              readOnly: false
+            updated_at:
+              type: string
+              readOnly: true
+              format: date-time
+              example: 2011-05-05T10:38:52.000Z
+    SearchCustomer:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            properties:
+              active:
+                type: boolean
+                readOnly: true
+                description: false if the user has been deleted
+              alias:
+                type: string
+                readOnly: false
+                description: An alias displayed to end users
+              chat_only:
+                type: boolean
+                readOnly: true
+                description: Whether or not the user is a chat-only agent
+              created_at:
+                type: string
+                format: date-time
+                readOnly: true
+                example: 2009-07-20T22:55:29.000Z
+              custom_role_id:
+                type: integer
+                readOnly: false
+                description: >-
+                  A custom role if the user is an agent on the Enterprise plan
+                  or above
+              default_group_id:
+                type: integer
+                readOnly: false
+                description: The id of the user's default group
+              details:
+                type: string
+                readOnly: false
+                description: >-
+                  Any details you want to store about the user, such as an
+                  address
+              email:
+                type: string
+                readOnly: false
+                example: johnny@example.com
+              external_id:
+                type: string
+                readOnly: false
+                description: >-
+                  A unique identifier from another system. The API treats the id
+                  as case sensitive.
+              iana_time_zone:
+                type: string
+                readOnly: true
+                description: The time zone for the user
+              id:
+                type: integer
+                readOnly: true
+                example: 35436
+              last_login_at:
+                type: string
+                readOnly: true
+                description: >-
+                  Last time the user signed in to Zendesk Support or made an API
+                  request using an API token or basic authentication
+              locale:
+                type: string
+                readOnly: false
+                example: en-US
+              locale_id:
+                type: integer
+                readOnly: false
+                example: 1
+                description: The user's language identifier
+              moderator:
+                type: boolean
+                readOnly: false
+                description: Designates whether the user has forum moderation capabilities
+              name:
+                type: string
+                readOnly: false
+                example: Johnny End User
+              notes:
+                type: string
+                readOnly: false
+              only_private_comments:
+                type: boolean
+                readOnly: false
+                description: true if the user can only create private comments
+              organization_id:
+                type: integer
+                readOnly: false
+                example: 57542
+              phone:
+                type: string
+                readOnly: false
+                example: 15551234567
+              photo:
+                $ref: '#/components/schemas/Attachment'
+              remote_photo_url:
+                type: string
+                readOnly: false
+                description: A URL pointing to the user's profile picture.
+              report_csv:
+                type: boolean
+                readOnly: true
+                description: >-
+                  Whether or not the user can access the CSV report on the
+                  Search tab of the Reporting page in the Support admin
+                  interface.
+              restricted_agent:
+                type: boolean
+                readOnly: false
+                description: >-
+                  If the agent has any restrictions; false for admins and
+                  unrestricted agents, true for other agents
+              role:
+                type: string
+                readOnly: false
+                enum:
+                  - end-user
+                  - agent
+                  - admin
+                description: >-
+                  The role of the user. Possible values- "end-user", "agent",
+                  "admin".
+                example: end-user
+              role_type:
+                type: integer
+                readOnly: true
+                description: >-
+                  The user's role id. 0 for a custom agent, 1 for a light agent,
+                  2 for a chat agent, 3 for a chat agent added to the Support
+                  account as a contributor (Chat Phase 4), 4 for an admin, and 5
+                  for a billing admin
+              shared:
+                type: boolean
+                readOnly: true
+                description: >-
+                  If the user is shared from a different Zendesk Support
+                  instance. Ticket sharing accounts only
+              shared_agent:
+                type: boolean
+                readOnly: true
+                description: >-
+                  If the user is a shared agent from a different Zendesk Support
+                  instance. Ticket sharing accounts only
+              shared_phone_number:
+                type: boolean
+                readOnly: true
+              signature:
+                type: string
+                readOnly: false
+                description: >-
+                  The user's signature. Only agents and admins can have
+                  signatures
+              suspended:
+                type: boolean
+                readOnly: false
+                description: If the agent is suspended.
+              tags:
+                type: array
+                readOnly: false
+                items:
+                  type: string
+                example:
+                  - important
+                  - enterprise
+              ticket_restriction:
+                type: string
+                readOnly: false
+                nullable: true
+                enum:
+                  - organization
+                  - groups
+                  - assigned
+                  - requested
+                  - null
+                description: >-
+                  Specifies which tickets the user has access to. Possible
+                  values are- "organization", "groups", "assigned", "requested",
+                  null
+              time_zone:
+                type: string
+                readOnly: false
+                example: Copenhagen
+              two_factor_auth_enabled:
+                type: boolean
+                readOnly: true
+              user_fields:
+                type: object
+                readOnly: false
+              url:
+                type: string
+                readOnly: true
+                example: https://company.zendesk.com/api/v2/end_users/35436.json
+              verified:
+                type: boolean
+                readOnly: false
+              updated_at:
+                type: string
+                readOnly: true
+                format: date-time
+                example: 2011-05-05T10:38:52.000Z
+        next_page:
+          type: string
+          format: nullable
+        previous_page:
+          type: string
+          format: nullable
+        count:
+          type: integer
+          example: 1
+          format: int32
+    UserFields:
+      type: object
+      properties:
+        user_fields:
+          type: array
+          items:
+            type: object
+            required:
+              - key
+              - title
+              - type
+            properties:
+              active:
+                type: boolean
+                readOnly: false
+              created_at:
+                type: string
+                format: date-time
+                readOnly: true
+              custom_field_options:
+                type: array
+                readOnly: false
+                description: >-
+                  Required and presented for a custom field of type "dropdown".
+                  Each option is represented by an object with a name and value
+                  property
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: kan
+                    value:
+                      type: string
+              description:
+                type: string
+                readOnly: false
+                description: User-defined description of this field's purpose
+              id:
+                type: integer
+                readOnly: true
+                format: int32
+              key:
+                readOnly: false
+                type: string
+              position:
+                readOnly: false
+                type: integer
+                format: int32
+              raw_description:
+                readOnly: false
+                type: string
+              raw_title:
+                readOnly: false
+                type: string
+              regexp_for_validation:
+                readOnly: false
+                type: string
+              system:
+                type: boolean
+                readOnly: true
+              tag:
+                type: string
+                readOnly: false
+                description: >-
+                  Optional for custom field of type "checkbox"; not presented
+                  otherwise.
+              title:
+                type: string
+                readOnly: false
+              type:
+                type: string
+                readOnly: false
+              updated_at:
+                type: string
+                readOnly: true
+                format: date-time
+              url:
+                type: string
+                readOnly: true
+        count:
+          type: integer
+          format: int32
+        next_page:
+          type: string
+          format: nullable
+        previous_page:
+          type: string
+          format: nullable
+    UserFieldOptions:
+      type: object
+      properties:
+        custom_field_options:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              id:
+                type: integer
+                format: int64
+              name:
+                type: string
+              raw_name:
+                type: string
+              position:
+                type: integer
+                format: int32
+              value:
+                type: string
+        next_page:
+          type: string
+          format: nullable
+        previous_page:
+          type: string
+          format: nullable
+        count:
+          type: integer
+          format: int32
+    Tags:
+      type: object
+      required:
+        - tags
+      properties:
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              count:
+                type: integer
+                format: int32
+        next_page:
+          type: string
+          format: nullable
+        previous_page:
+          type: string
+          format: nullable
+        count:
+          type: integer
+          format: int32
+    Tickets:
+      type: object
+      properties:
+        tickets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ticket'
+        next_page:
+          type: integer
+          nullable: true
+        previous_page:
+          type: integer
+          nullable: true
+        count:
+          type: integer
+    Attachments:
+      type: object
+      properties:
+        upload:
+          type: object
+          properties:
+            token:
+              type: string
+            expires_at:
+              type: string
+              format: date-time
+            attachments:
+              type: array
+              items:
+                $ref: '#/components/schemas/Attachment'
+    Attachment:
+      type: object
+      readOnly: true
+      nullable: true
+      properties:
+        content_type:
+          type: string
+          readOnly: true
+          example: image/png
+        content_url:
+          type: string
+          readOnly: true
+          example: https://company.zendesk.com/photos/my_funny_profile_pic.png
+        deleted:
+          type: boolean
+          readOnly: true
+          example: false
+        file_name:
+          type: string
+          readOnly: true
+        height:
+          type: string
+          readOnly: true
+        id:
+          type: number
+          readOnly: true
+          example: 928374
+        inline:
+          type: boolean
+          readOnly: true
+        malware_access_override:
+          type: boolean
+          readOnly: true
+        malware_scan_result:
+          type: string
+          readOnly: true
+        mapped_content_url:
+          type: string
+          readOnly: true
+        size:
+          type: integer
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+        width:
+          type: string
+          readOnly: true
+        thumbnails:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                example: 928375
+              name:
+                type: string
+                example: my_funny_profile_pic_thumb.png
+              content_url:
+                type: string
+                example: >-
+                  https://company.zendesk.com/photos/my_funny_profile_pic_thumb.png
+              content_type:
+                type: string
+                example: image/png
+              size:
+                type: number
+                example: 58298
+    Comments:
+      type: object
+      readOnly: false
+      required:
+        - body
+      properties:
+        attachments:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Attachment'
+        audit_id:
+          type: integer
+          readOnly: true
+          description: The id of the ticket audit record
+        author_id:
+          type: integer
+          readOnly: false
+          description: The id of the comment author.
+        body:
+          type: string
+          example: Very important ticket
+          readOnly: false
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        html_body:
+          type: string
+          readOnly: false
+          description: The comment formatted as HTML
+        id:
+          type: integer
+          readOnly: true
+        metadata:
+          type: object
+          readOnly: true
+        plain_body:
+          type: string
+          readOnly: true
+          description: The comment as plain text.
+        public:
+          type: boolean
+          readOnly: false
+          description: >-
+            true if a public comment; false if an internal note. The initial
+            value set on ticket creation persists for any additional comment
+            unless you change it
+        type:
+          type: string
+          readOnly: true
+          description: >-
+            Comment or VoiceComment. The JSON object for adding voice comments
+            to tickets is different.
+        uploads:
+          type: array
+          readOnly: true
+          items:
+            type: string
+          description: >-
+            List of tokens received from uploading files for comment
+            attachments. The files are attached by creating or updating tickets
+            with the tokens.
+        via:
+          type: object
+          description: Describes how the object was created.
+          readOnly: false
+          properties:
+            channel:
+              type: string
+            source:
+              type: object
+              properties:
+                from:
+                  type: object
+                to:
+                  type: object
+                rel:
+                  type: string
+                  nullable: true
+    Ticket:
+      type: object
+      properties:
+        allow_attachments:
+          type: boolean
+          readOnly: true
+          default: true
+          description: Permission for agents to add add attachments to a comment.
+        allow_channelback:
+          type: boolean
+          readOnly: true
+          description: >-
+            Is false if channelback is disabled, true otherwise. Only applicable
+            for channels framework ticket
+        assignee_email:
+          type: string
+          readOnly: false
+          writeOnly: true
+          description: Write only. The email address of the agent to assign the ticket to
+        assignee_id:
+          type: integer
+          format: int32
+          readOnly: false
+          description: The agent currently assigned to the ticket
+        brand_id:
+          type: integer
+          readOnly: false
+          description: Enterprise only. The id of the brand this ticket is associated with
+        collaborator_ids:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+          description: The ids of users currently CC'ed on the ticket
+        collaborators:
+          type: array
+          readOnly: true
+          items:
+            type: string
+            readOnly: true
+            description: POST requests only. Users to add as cc's when creating a ticket.
+        comment:
+          $ref: '#/components/schemas/Comments'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        custom_fields:
+          type: array
+          readOnly: false
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+              value:
+                type: string
+        description:
+          type: string
+          readOnly: true
+          description: >-
+            Read-only first comment on the ticket. When creating a ticket, use
+            comment to set the description.
+        due_at:
+          type: string
+          readOnly: false
+          format: nullable
+          description: >-
+            If this is a ticket of type "task" it has a due date. Due date
+            format uses ISO 8601 format.
+        email_cc_ids:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+          description: The ids of agents or end users currently CC'ed on the ticket.
+        email_ccs:
+          type: array
+          readOnly: false
+          writeOnly: true
+          description: >-
+            Write only. An array of objects that represent agent or end users
+            email CCs to add or delete from the ticket.
+          items:
+            type: object
+            properties:
+              user_id:
+                type: integer
+              user_email:
+                type: string
+              user_name:
+                type: string
+              action:
+                type: string
+                default: put
+                enum:
+                  - put
+                  - delete
+        external_id:
+          type: string
+          readOnly: false
+          description: An id you can use to link Zendesk Support tickets to local records
+        follower_ids:
+          type: array
+          readOnly: true
+          description: The ids of agents currently following the ticket.
+          items:
+            type: integer
+        followers:
+          type: array
+          readOnly: false
+          writeOnly: true
+          description: >-
+            Write only. An array of objects that represent agent followers to
+            add or delete from the ticket.
+          items:
+            type: object
+            properties:
+              user_id:
+                type: integer
+              user_email:
+                type: string
+              action:
+                type: string
+                default: put
+                enum:
+                  - put
+                  - delete
+        followup_ids:
+          type: array
+          description: >-
+            The ids of the followups created from this ticket. Ids are only
+            visible once the ticket is closed
+          readOnly: true
+          items:
+            type: integer
+        forum_topic_id:
+          type: integer
+          readOnly: true
+        group_id:
+          type: integer
+          readOnly: false
+        has_incidents:
+          type: boolean
+          readOnly: true
+        is_public:
+          type: boolean
+          readOnly: true
+          description: Is true if any comments are public, false otherwise
+        id:
+          type: integer
+          readOnly: true
+        macro_id:
+          type: integer
+          readOnly: false
+          writeOnly: true
+          description: Write only. A macro ID to be recorded in the ticket audit
+        metadata:
+          type: object
+          readOnly: false
+        organization_id:
+          type: integer
+          readOnly: false
+        priority:
+          type: string
+          readOnly: false
+          enum:
+            - urgent
+            - high
+            - normal
+            - low
+        problem_id:
+          type: integer
+          readOnly: false
+          description: >-
+            For tickets of type "incident", the ID of the problem the incident
+            is linked to
+        raw_subject:
+          type: string
+          readOnly: false
+          description: >-
+            The dynamic content placeholder, if present, or the "subject" value,
+            if not.
+        recipient:
+          type: string
+          readOnly: false
+        requester:
+          type: object
+          readOnly: false
+          writeOnly: true
+          description: Write only
+          required:
+            - name
+            - email
+          properties:
+            locale_id:
+              type: integer
+            name:
+              type: string
+            email:
+              type: string
+        requester_id:
+          type: integer
+          readOnly: false
+        satisfaction_rating:
+          type: object
+          readOnly: true
+          nullable: true
+          description: >-
+            The satisfaction rating of the ticket, if it exists, or the state of
+            satisfaction, "offered" or "unoffered". The value is null for plan
+            types that don't support CSAT
+          properties:
+            comment:
+              type: string
+            id:
+              type: integer
+            score:
+              type: string
+        sharing_agreement_ids:
+          type: array
+          readOnly: true
+          items:
+            type: integer
+          description: The ids of the sharing agreements used for this ticket
+        status:
+          type: string
+          readOnly: false
+          enum:
+            - new
+            - open
+            - pending
+            - hold
+            - solved
+            - closed
+        subject:
+          type: string
+          readOnly: false
+        submitter_id:
+          type: integer
+          readOnly: false
+        tags:
+          type: array
+          readOnly: true
+          items:
+            type: string
+        type:
+          type: string
+          readOnly: false
+          enum:
+            - problem
+            - incident
+            - question
+            - task
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+        via:
+          type: object
+          readOnly: false
+          properties:
+            channel:
+              type: string
+            source:
+              type: object
+              properties:
+                from:
+                  type: object
+                to:
+                  type: object
+                rel:
+                  type: string
+                  nullable: true
+        via_id:
+          type: integer
+          readOnly: false
+          writeOnly: true
+          description: Write only.
+        voice_comment:
+          type: object
+          readOnly: false
+          writeOnly: true
+          description: Write only
+          properties:
+            from:
+              type: string
+            to:
+              type: string
+            recording_url:
+              type: string
+            started_at:
+              type: string
+              format: date-time
+            call_duration:
+              type: integer
+            answered_by_id:
+              type: integer
+            transcription_text:
+              type: string
+            location:
+              type: string
+    Help_Articles:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            required:
+              - locale
+              - permission_group_id
+              - title
+              - user_segment_id
+            properties:
+              result_type:
+                type: string
+                readOnly: true
+                default: article
+                description: For articles, always the string "article"
+              snippet:
+                type: string
+                readOnly: true
+                default: article
+                description: The portion of an article that is relevant to the search query, with matching words or phrases delimited by <em></em> tags. Example- a query for "carrot potato" might return the snippet "...don't confuse <em>carrots</em> with <em>potatoes</em>..."
+              author_id:
+                type: integer
+                readOnly: false
+                example: 888887
+              body:
+                type: string
+                readOnly: false
+                description: HTML body of the article. Unsafe tags and attributes may be removed before display
+              comments_disabled:
+                type: boolean
+                readOnly: false
+                description: True if comments are disabled; false otherwise
+              created_at:
+                type: string
+                readOnly: true
+                format: date-time
+                description: The time the article was created
+              draft: 
+                type: boolean
+                readOnly: true
+                default: false
+                description: True if the translation for the current locale is a draft; false otherwise. 
+              edited_at:
+                type: string
+                readOnly: true
+                format: date-time
+                description: The time the article was last edited in its displayed locale
+              html_url:
+                type: string
+                readOnly: true
+              id: 
+                type: integer
+                readOnly: true
+                example: 35467
+              label_names:
+                type: array
+                items:
+                  type: string
+                readOnly: false
+                description: An array of label names associated with this article. By default no label names are used.
+              locale: 
+                type: string
+                readOnly: false
+                example: en
+              outdated: 
+                type: boolean
+                readOnly: true
+                default: false
+                description: Deprecated. Always false because the source translation is always the most up-to-date translation
+              outdated_locales: 
+                type: array
+                readOnly: true
+                items:
+                  type: string
+                description: Locales in which the article was marked as outdated
+              permission_group_id: 
+                type: integer
+                readOnly: false
+                example: 123
+                description: The id of the permission group which defines who can edit and publish this article
+              position: 
+                type: integer
+                readOnly: false
+                default: 0
+                description: The position of this article in the article list.
+              promoted: 
+                type: boolean
+                readOnly: false
+                default: false
+                description: True if this article is promoted; false otherwise. false by default
+              section_id: 
+                type: integer
+                readOnly: false
+                description: The id of the section to which this article belongs
+              source_locale: 
+                type: string
+                readOnly: true
+                description: The source (default) locale of the article
+              title: 
+                type: string
+                readOnly: false
+                example: Printing orders
+              updated_at:
+                type: string
+                readOnly: true
+                format: date-time
+              url: 
+                type: string
+                readOnly: true
+              user_segment_id: 
+                type: integer
+                readOnly: false
+                nullable: true
+                description: The id of the user segment which defines who can see this article.
+                example: 12
+              vote_count: 
+                type: integer
+                readOnly: true
+              vote_sum: 
+                type: integer
+                readOnly: true
+                description: The sum of upvotes (+1) and downvotes (-1), which may be positive or negative

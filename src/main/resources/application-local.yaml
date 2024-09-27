@@ -1,0 +1,43 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:mysql://localhost:3306/chathub_core?characterEncoding=UTF-8&useUnicode=yes&autoReconnect=true
+    username: user
+    password: pwd
+  liquibase:
+    enabled: false
+    url: jdbc:mysql://localhost:3306/chathub_core/dev_chathub_platform
+    user: pwd
+    password: h$q*5WgL9#Ba
+    change-log: classpath:liquibase/changelog.xml
+
+server:
+  port: 8080
+
+aws:
+  secrets-manager:
+    region: eu-west-1
+  s3:
+    region: eu-west-1
+    buckets:
+      open-specs-bucket: local-interact-chathub-provider-spec
+      file-upload-bucket: local-interact-chathub-file-upload
+
+chathub:
+  host: http://localhost:8080
+
+open-api-parser:
+  media-types:
+    request-body:
+      - "application/json"
+      - "multipart/form-data"
+      - "image/jpeg"
+      - "image/png"
+    response-body:
+      - "application/json"
+
+shopify:
+  client-id-smid: shopify-client-id-updated
+  provider-id: 0184d42f19f0ec5db850ed9838781580

@@ -1,0 +1,900 @@
+openapi: 3.0.0
+info:
+  title: Shopify customer's APIs
+  description: Shopify customer's APIs
+  version: '1.0.0'
+servers:
+  - url: https://cyan-bottle.myshopify.com/
+    description: Clickatell Shopify
+paths:
+  /admin/api/2022-04/customers/search.json:
+    get:
+      operationId: 1
+      summary: Search Customers
+      parameters:
+        - $ref: '#/components/parameters/fields'
+        - $ref: '#/components/parameters/limit'
+        - name: order
+          in: query
+          description: Set the field and direction by which to order results
+          schema:
+            default: last_order_date DESC
+            type: string
+        - name: query
+          in: query
+          description: |
+              Text to search for in the shop's customer data. Note: Supported queries: accepts_marketing, activation_date, address1, address2, city, company, country, customer_date, customer_first_name, customer_id, customer_last_name, customer_tag, email, email_marketing_state, first_name, first_order_date, id, last_abandoned_order_date, last_name, multipass_identifier, orders_count, order_date, phone, province, shop_id, state, tag, total_spent, updated_at, verified_email, product_subscriber_status. All other queries returns all customers
+          schema:
+            type: string
+          example: email:steve.lastnameson@example.com
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customers:
+                    $ref: '#/components/schemas/customers'
+  /admin/api/2022-04/customers/{customer_id}/orders.json:
+    get:
+      operationId: 2
+      summary: Get Orders
+      parameters:
+        - name: customer_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: order
+          in: query
+          description: Set the field and direction by which to order results
+          schema:
+            default: created_at DESC
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open,closed,cancelled,any]
+            default: open
+        - name: attribution_app_id
+          in: query
+          description: |
+            Show orders attributed to a certain app, specified by the app ID. Set as current to show orders for the app currently consuming the API.
+          schema:
+            type: string
+        - name: created_at_max
+          in: query
+          description: |
+            Show orders created at or before date (date ISO 8601).
+          schema:
+            type: string
+          example: 2008-01-10T11:00:00-05:00
+        - name: created_at_min
+          in: query
+          description: |
+            Show orders created at or after date (date ISO 8601).
+          schema:
+            type: string
+          example: 2008-01-10T11:00:00-05:00
+        - $ref: '#/components/parameters/fields'
+        - $ref: '#/components/parameters/limit'
+        - name: financial_status
+          in: query
+          schema:
+            type: string
+            default: any
+            enum: [authorized,pending,paid,partially_paid,refunded,
+                   voided,partially_refunded,any,unpaid]
+        - name: fulfillment_status
+          in: query
+          schema:
+            type: string
+            default: any
+            enum: [shipped,partial,unshipped,any,unfulfilled]
+        - name: ids
+          in: query
+          description: Retrieve only orders specified by a comma-separated list of order IDs.
+          schema:
+            type: string
+            default: any
+        - name: processed_at_max
+          in: query
+          description: |
+            Show orders imported at or before date (date ISO 8601).
+          schema:
+            type: string
+          example: 2008-01-10T11:00:00-05:00
+        - name: processed_at_min
+          in: query
+          description: |
+            Show orders imported at or after date (date ISO 8601).
+          schema:
+            type: string
+          example: 2008-01-10T11:00:00-05:00
+        - name: since_id
+          in: query
+          description: Show orders after the specified ID.
+          schema:
+            type: integer
+        - name: updated_at_max
+          in: query
+          description: Show orders last updated at or before date (date ISO 8601).
+          schema:
+            type: string
+          example: 2008-01-10T11:00:00-05:00
+        - name: updated_at_min
+          in: query
+          description: Show orders last updated at or after date (date ISO 8601).
+          schema:
+            type: string
+          example: 2008-01-10T11:00:00-05:00
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    $ref: '#/components/schemas/orders'
+components:
+  parameters:
+    fields:
+      name: fields
+      in: query
+      description: Show only certain fields, specified by a comma-separated list of field names
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      description: The maximum number of results to show
+      schema:
+        type: integer
+        default: 50
+        minimum: 0
+        maximum: 250
+  schemas:
+    customers:
+      type: array
+      items:
+        $ref: '#/components/schemas/customer'
+    customer:
+      type: object
+      properties:
+          id:
+            type: integer
+            format: int64
+          email:
+            type: string
+            format: email
+          accepts_marketing:
+            type: boolean
+          created_at:
+            type: string
+          updated_at:
+            type: string
+          first_name:
+            type: string
+          last_name:
+            type: string
+          orders_count:
+            type: integer
+            format: int32
+          state:
+            type: string
+          total_spent:
+            type: number
+            format: double
+          last_order_id:
+            type: integer
+            format: int64
+          note:
+            type: string
+          verified_email:
+            type: boolean
+          multipass_identifier:
+            type: string
+          tax_exempt:
+            type: boolean
+          tags:
+            type: string
+          last_order_name:
+            type: string
+          currency:
+            type: string
+          phone:
+            type: string
+          marketing_opt_in_level:
+            type: string
+          tax_exemptions:
+            type: array
+            items:
+              type: string
+          admin_graphql_api_id:
+            type: string
+          addresses:
+            type: array
+            items:
+              $ref: '#/components/schemas/address'
+          default_address:
+            $ref: '#/components/schemas/address'
+          email_marketing_consent:
+            $ref: '#/components/schemas/email_marketing_consent'
+          sms_marketing_consent:
+            $ref: '#/components/schemas/sms_marketing_consent'
+    order_customer:
+      type: object
+      properties:
+          id:
+            type: integer
+            format: int64
+          email:
+            type: string
+            format: email
+          accepts_marketing:
+            type: boolean
+          created_at:
+            type: string
+          updated_at:
+            type: string
+          first_name:
+            type: string
+          last_name:
+            type: string
+          orders_count:
+            type: integer
+            format: int32
+          state:
+            type: string
+          total_spent:
+            type: number
+            format: double
+          last_order_id:
+            type: integer
+            format: int64
+          note:
+            type: string
+          verified_email:
+            type: boolean
+          multipass_identifier:
+            type: string
+          tax_exempt:
+            type: boolean
+          tags:
+            type: string
+          last_order_name:
+            type: string
+          currency:
+            type: string
+          phone:
+            type: string
+          marketing_opt_in_level:
+            type: string
+          tax_exemptions:
+            type: array
+            items:
+              type: string
+          admin_graphql_api_id:
+            type: string
+          default_address:
+            $ref: '#/components/schemas/address'
+          email_marketing_consent:
+            $ref: '#/components/schemas/email_marketing_consent'
+          sms_marketing_consent:
+            $ref: '#/components/schemas/sms_marketing_consent'
+    address:
+      type: object
+      properties:
+          id:
+            type: integer
+            format: int64
+          customer_id:
+            type: integer
+            format: int64
+          first_name:
+            type: string
+          last_name:
+            type: string
+          company:
+            type: string
+          address1:
+            type: string
+          address2:
+            type: string
+          city:
+            type: string
+          province:
+            type: string
+          country:
+            type: string
+          zip:
+            type: string
+          phone:
+            type: string
+          name:
+            type: string
+          province_code:
+            type: string
+          country_code:
+            type: string
+          country_name:
+            type: string
+          default:
+            type: boolean
+    email_marketing_consent:
+      type: object
+      properties:
+        state:
+          type: string
+        opt_in_level:
+          type: string
+        consent_updated_at:
+          type: string
+    sms_marketing_consent:
+      type: object
+      properties:
+        state:
+          type: string
+        opt_in_level:
+          type: string
+        consent_updated_at:
+          type: string
+        consent_collected_from:
+          type: string
+    orders:
+      type: array
+      items:
+        properties:
+          app_id:
+            type: integer
+          id:
+            type: integer
+          billing_address:
+            $ref: '#/components/schemas/billing_address'
+          browser_ip:
+            type: string
+            format: ipv4
+          buyer_accepts_marketing:
+            type: boolean
+          cancel_reason:
+            type: string
+            enum: [customer,fraud,inventory,declined,other]
+          cancelled_at:
+            type: string
+          cart_token:
+            type: string
+          checkout_token:
+            type: string
+          client_details:
+            $ref: '#/components/schemas/client_details'
+          closed_at:
+            type: string
+          created_at:
+            type: string
+          currency:
+            type: string
+          current_total_discounts:
+            type: string
+          current_total_discounts_set:
+            type: object
+            properties:
+             current_total_discounts_set:
+              $ref: '#/components/schemas/price_set'
+          current_subtotal_price:
+            type: string
+          current_subtotal_price_set:
+            type: object
+            properties:
+             current_subtotal_price_set:
+              $ref: '#/components/schemas/price_set'
+          current_total_tax:
+            type: string
+          current_total_tax_set:
+            type: object
+            properties:
+             current_total_tax_set:
+              $ref: '#/components/schemas/price_set'
+          customer:
+            $ref: '#/components/schemas/order_customer'
+          customer_locale:
+            type: string
+          discount_applications:
+            type: object
+            properties:
+             discount_applications:
+              items:
+               $ref: '#/components/schemas/discount_application'
+          discount_codes:
+            type: array
+            items:
+              $ref: '#/components/schemas/discount_code'
+          email:
+            type: string
+            format: email
+          estimated_taxes:
+            type: boolean
+          financial_status:
+            type: string
+            enum: [pending,authorized,partially_paid,paid,partially_refunded,
+                   refunded,voided]
+          fulfillments:
+            type: array
+            items:
+              $ref: '#/components/schemas/fulfillment'
+          fulfillment_status:
+            type: string
+            enum: [fulfilled,null,partial,restocked]
+          gateway:
+            type: string
+          landing_site:
+            type: string
+          line_items:
+            type: array
+            items:
+              $ref: '#/components/schemas/line_item'
+          location_id:
+            type: integer
+          name:
+            type: string
+          note:
+            type: string
+          note_attributes:
+            $ref: '#/components/schemas/properties'
+          number:
+            type: integer
+          order_number:
+            type: integer
+          original_total_duties_set:
+            type: object
+            properties:
+              original_total_duties_set:
+                $ref: '#/components/schemas/price_set'
+          payment_details:
+            $ref: '#/components/schemas/payment_details'
+          payment_terms:
+            $ref: '#/components/schemas/payment_terms'
+          payment_gateway_names:
+            type: array
+            items:
+              type: string
+          phone:
+            type: string
+          presentment_currency:
+            type: string
+          processed_at:
+            type: string
+          processing_method:
+            type: string
+            enum: [checkout,direct,manual,offsite,express,free]
+          referring_site:
+            type: string
+          refunds:
+            type: array
+            items:
+              $ref: '#/components/schemas/refund'
+          shipping_address:
+            $ref: '#/components/schemas/billing_address'
+          shipping_lines:
+            $ref: '#/components/schemas/shipping_line'
+          source_name:
+            type: string
+          source_identifier:
+            type: string
+          source_url:
+            type: string
+          subtotal_price:
+            type: number
+          subtotal_price_set:
+            $ref: '#/components/schemas/price_set'
+          tags:
+            type: string
+          tax_lines:
+            type: array
+            items:
+              $ref: '#/components/schemas/order_tax_line'
+          taxes_included:
+            type: boolean
+          test:
+            type: boolean
+          token:
+            type: string
+          total_discounts:
+            type: string
+          total_discounts_set:
+            $ref: '#/components/schemas/price_set'
+          total_line_items_price:
+            type: string
+          total_line_items_price_set:
+            $ref: '#/components/schemas/price_set'
+          total_outstanding:
+            type: string
+          total_price:
+            type: string
+          total_price_set:
+            $ref: '#/components/schemas/price_set'
+          total_shipping_price_set:
+            $ref: '#/components/schemas/price_set'
+          total_tax:
+            type: string
+          total_tax_set:
+            $ref: '#/components/schemas/price_set'
+          total_tip_received:
+            type: string
+          total_weight:
+            type: number
+          updated_at:
+            type: string
+          user_id:
+            type: integer
+          order_status_url:
+            type: object
+            properties:
+              order_status_url:
+                $ref: '#/components/schemas/order_status_url'
+    order_status_url:
+      type: string
+    order_tax_line:
+      type: object
+      properties:
+        price:
+          type: number
+        rate:
+          type: number
+        title:
+          type: string
+        channel_liable:
+          type: boolean
+    shipping_line:
+      type: object
+      properties:
+        code:
+          type: string
+        discounted_price:
+          type: string
+        discounted_price_set:
+          $ref: '#/components/schemas/price_set'
+        price:
+          type: string
+        price_set:
+          $ref: '#/components/schemas/price_set'
+        source:
+          type: string
+        title:
+          type: string
+        tax_lines:
+          type: array
+          items:
+            type: object
+        carrier_identifier:
+          type: string
+        requested_fulfillment_service_id:
+          type: string
+    refund:
+      type: object
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        created_at:
+          type: string
+        note:
+          type: string
+        user_id:
+          type: integer
+        processed_at:
+          type: string
+        refund_line_items:
+          type: array
+          items:
+            type: object
+        transactions:
+          type: array
+          items:
+            type: object
+        order_adjustments:
+          type: array
+          items:
+            type: object
+    payment_terms:
+      type: object
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+        payment_terms_name:
+          type: string
+        payment_terms_type:
+          type: string
+        due_in_days:
+          type: integer
+        payment_schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/payment_schedule'
+    payment_schedule:
+      type: object
+      properties:
+        amount:
+          type: integer
+        currency:
+          type: string
+        issued_at:
+          type: string
+        due_at:
+          type: string
+        completed_at:
+          type: string
+        expected_payment_method:
+          type: string
+    payment_details:
+      type: object
+      properties:
+        avs_result_code:
+          type: string
+        credit_card_bin:
+          type: string
+        credit_card_company:
+          type: string
+        credit_card_number:
+          type: string
+        cvv_result_code:
+          type: string
+    line_item:
+      type: object
+      properties:
+        fulfillable_quantity:
+          type: integer
+        fulfillment_service:
+          type: string
+        fulfillment_status:
+          type: string
+          enum: [null,fulfilled,partial,not_eligible]
+        grams:
+          type: integer
+        id:
+          type: integer
+        price:
+          type: string
+        price_set:
+          $ref: '#/components/schemas/price_set'
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+        requires_shipping:
+          type: boolean
+        sku:
+          type: string
+        title:
+          type: string
+        variant_id:
+          type: integer
+        variant_title:
+          type: string
+        vendor:
+          type: string
+        name:
+          type: string
+        gift_card:
+          type: boolean
+        properties:
+          $ref: '#/components/schemas/properties'
+        taxable:
+          type: boolean
+        tax_lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/tax_line'
+        tip_payment_gateway:
+          type: string
+        tip_payment_method:
+          type: string
+        total_discount:
+          type: string
+        total_discount_set:
+          $ref: '#/components/schemas/price_set'
+        discount_allocations:
+          type: array
+          items:
+            $ref: '#/components/schemas/discount_allocation'
+        origin_location:
+          $ref: '#/components/schemas/origin_location'
+        duties:
+          type: array
+          items:
+            $ref: '#/components/schemas/duty'
+    duty:
+      type: object
+      properties:
+        id:
+          type: integer
+        harmonized_system_code:
+          type: string
+        country_code_of_origin:
+          type: string
+        shop_money:
+          $ref: '#/components/schemas/money'
+        presentment_money:
+          $ref: '#/components/schemas/money'
+        tax_lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/tax_line'
+        admin_graphql_api_id:
+          type: string
+    origin_location:
+      type: object
+      properties:
+        id:
+          type: integer
+        country_code:
+          type: string
+        province_code:
+          type: string
+        name:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        zip:
+          type: string
+    discount_allocation:
+      type: object
+      properties:
+        amount:
+          type: string
+        discount_application_index:
+          type: integer
+        amount_set:
+          $ref: '#/components/schemas/price_set'
+    tax_line:
+      type: object
+      properties:
+        title:
+          type: string
+        price:
+          type: string
+        price_set:
+          $ref: '#/components/schemas/price_set'
+        channel_liable:
+          type: boolean
+        rate:
+          type: number
+          format: double
+    properties:
+      type: array
+      items:
+        properties:
+          name:
+            type: string
+          value:
+            type: string
+    fulfillment:
+      type: object
+      properties:
+        created_at:
+          type: string
+        id:
+          type: integer
+          format: int64
+        order_id:
+          type: integer
+          format: int64
+        status:
+          type: string
+          enum: [pending,open,success,cancelled,error,failure]
+        tracking_company:
+          type: string
+        tracking_number:
+          type: string
+        updated_at:
+          type: string
+    discount_code:
+      type: object
+      properties:
+        amount:
+          type: string
+        code:
+          type: string
+        type:
+          type: string
+          enum: [fixed_amount,percentage,shipping]
+    discount_application:
+      type: object
+      properties:
+        allocation_method:
+          type: string
+          enum: [across,each,one]
+        code:
+          type: string
+        description:
+          type: string
+        target_selection:
+          type: string
+          enum: [all,entitled,explicit]
+        target_type:
+          type: string
+          enum: [line_item,shipping_line]
+        title:
+          type: string
+        type:
+          type: string
+          enum: [automatic,discount_code,manual,script]
+        value:
+          type: string
+        value_type:
+          type: string
+          enum: [fixed_amount,percentage]
+    billing_address:
+      type: object
+      properties:
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        company:
+          type: string
+        country:
+          type: string
+        country_code:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        latitude:
+          type: string
+        longitude:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        province:
+          type: string
+        province_code:
+          type: string
+        zip:
+          type: string
+    client_details:
+      type: object
+      properties:
+        accept_language:
+          type: string
+        browser_height:
+          type: integer
+        browser_ip:
+          type: string
+          format: ipv4
+        browser_width:
+          type: integer
+        session_hash:
+          type: string
+        user_agent:
+          type: string
+    price_set:
+      type: object
+      properties:
+        shop_money:
+          $ref: '#/components/schemas/money'
+        presentment_money:
+          $ref: '#/components/schemas/money'
+    money:
+      type: object
+      properties:
+        amount:
+          type: string
+        currency_code:
+          type: string

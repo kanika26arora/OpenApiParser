@@ -8,11 +8,11 @@ provider "aws" {
   }
 }
 
-resource "aws_s3_bucket" "openApiParser-provider-spec-bucket" {
-  bucket = "local-interact-openApiParser-provider-spec"
+resource "aws_s3_bucket" "parser-provider-spec-bucket" {
+  bucket = "local-interact-parser-provider-spec"
 }
 
-resource "aws_s3_bucket" "openApiParser-file-upload-bucket" {
-  bucket = "local-interact-openApiParser-file-upload"
+resource "aws_s3_bucket" "parser-file-upload-bucket" {
+  bucket = "local-interact-parser-file-upload"
 }
 

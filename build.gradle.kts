@@ -35,8 +35,6 @@ dependencies {
 	implementation("org.postgresql:postgresql:42.7.2")
 	implementation("org.hibernate.orm:hibernate-core:6.2.1.Final")
 	implementation("software.amazon.awssdk:s3:2.20.153")
-
-
 }
 
 dependencyManagement {

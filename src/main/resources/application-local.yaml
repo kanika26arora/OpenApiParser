@@ -22,11 +22,8 @@ aws:
   s3:
     region: eu-west-1
     buckets:
-      open-specs-bucket: local-interact-chathub-provider-spec
-      file-upload-bucket: local-interact-chathub-file-upload
-
-chathub:
-  host: http://localhost:8080
+      open-specs-bucket: local-interact-parser-provider-spec
+      file-upload-bucket: local-interact-parser-file-upload
 
 open-api-parser:
   media-types:
@@ -41,3 +38,8 @@ open-api-parser:
 shopify:
   client-id-smid: shopify-client-id-updated
   provider-id: 0184d42f19f0ec5db850ed9838781580
+
+springdoc:
+  swagger-ui:
+    path: '/swagger-ui.html'
+    enabled: true

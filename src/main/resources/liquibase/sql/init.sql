@@ -1,9 +1,8 @@
 CREATE TABLE IF NOT EXISTS `provider`
 (
-    `id`              varchar(32)  NOT NULL COMMENT 'Unique identifier of the provider',
+    `id`              varchar(36)  NOT NULL COMMENT 'Unique identifier of the provider',
     `name`            varchar(100) NOT NULL COMMENT 'Name of the provider',
-    `logo_url`        varchar(255) NOT NULL COMMENT 'URL of the provider logo from CMS',
-    `description_url` varchar(255) NOT NULL COMMENT 'URL to get description of the provider from CMS',
+    `logo_url`        varchar(255) NOT NULL COMMENT 'URL of the provider',
     `more_info_url`   varchar(255) COMMENT 'URL to get more info about the provider',
     `created_date`    datetime(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Creation date of the provider entry',
     `modified_date`   datetime(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT 'Last modification date of the provider entry',
@@ -11,14 +10,13 @@ CREATE TABLE IF NOT EXISTS `provider`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci
-    COMMENT ='Global information about the provider, which is available for integration through ChatHub';
+    COMMENT ='Global information about the provider, which is available for integration';
 
 
 CREATE TABLE IF NOT EXISTS `provider_specification_version`
 (
-    `id`                   varchar(32)  NOT NULL COMMENT 'Unique identifier of the specification version',
-    `provider_id`          varchar(32)  NOT NULL COMMENT 'ID of the provider to which specification version belongs',
-    `auth_details`         JSON         NOT NULL COMMENT 'Auth setting to activate authentication for specific version of the specification',
+    `id`                   varchar(36)  NOT NULL COMMENT 'Unique identifier of the specification version',
+    `provider_id`          varchar(36)  NOT NULL COMMENT 'ID of the provider to which specification version belongs',
     `version_label`        varchar(32)  NOT NULL COMMENT 'Version of the provider specification',
     `open_api_spec_s3_key` varchar(255) NOT NULL COMMENT 'S3 Location of the Open API Spec file',
     `created_date`         datetime(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Creation date of the specification entry',
@@ -33,14 +31,16 @@ CREATE TABLE IF NOT EXISTS `provider_specification_version`
 
 CREATE TABLE IF NOT EXISTS `provider_endpoint`
 (
-    `id`                                varchar(32)      NOT NULL COMMENT 'Unique identifier of the provider endpoint info',
+    `id`                                varchar(36)      NOT NULL COMMENT 'Unique identifier of the provider endpoint info',
     `operation_name`                    varchar(100)     NOT NULL COMMENT 'Label for the endpoint',
-    `provider_specification_version_id` varchar(32)      NOT NULL COMMENT 'ID of the provider specification version to which endpoint belongs',
+    `provider_specification_version_id` varchar(36)      NOT NULL COMMENT 'ID of the provider specification version to which endpoint belongs',
     `request_parameters`                JSON             NOT NULL COMMENT 'Input parameters for the endpoint',
     `endpoint_response`                 JSON             NOT NULL COMMENT 'Description of the endpoint responses',
     `endpoint_config`                   JSON             NOT NULL COMMENT 'Detailed configuration of the endpoint',
     `created_date`                      datetime(3)      NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'Creation date of the endpoint info entry',
     `modified_date`                     datetime(3)      NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT 'Last modification date of the endpoint info entry',
+    `endpoint_response_template`        json             COMMENT 'template of endpoint response',
+    `operation_id`                      SMALLINT UNSIGNED NOT NULL COMMENT 'Operation id of endpoint to uniquely identify'
     PRIMARY KEY (`id`),
     KEY `created_date` (`created_date`),
     KEY `modified_date` (`modified_date`),

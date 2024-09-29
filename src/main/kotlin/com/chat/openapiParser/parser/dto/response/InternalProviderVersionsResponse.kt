@@ -1,6 +1,6 @@
 package com.chat.openapiParser.parser.dto.response
 
-data class ProviderVersionsResponse(
+data class InternalProviderVersionsResponse(
     override val id: String,
     override val name: String,
     override val logoUrl: String,

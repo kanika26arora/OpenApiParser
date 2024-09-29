@@ -3,12 +3,12 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:mysql://localhost:3306/chathub_core?characterEncoding=UTF-8&useUnicode=yes&autoReconnect=true
+    url: jdbc:mysql://localhost:3306/parser?characterEncoding=UTF-8&useUnicode=yes&autoReconnect=true
     username: user
     password: pwd
   liquibase:
     enabled: false
-    url: jdbc:mysql://localhost:3306/chathub_core/dev_chathub_platform
+    url: jdbc:mysql://localhost:3306/parser
     user: pwd
     password: h$q*5WgL9#Ba
     change-log: classpath:liquibase/changelog.xml

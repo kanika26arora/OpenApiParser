@@ -1,8 +1,8 @@
 To run the application:
 1. Go to src>resources and start docker with command: docker-compose up -d
 2. Next step is to run terraform within localstack. Run these commands on terminal:
-  terraform init
-  terraform apply
+  1. terraform init
+  2. terraform apply
 
 
 # To check if buckets have been created
